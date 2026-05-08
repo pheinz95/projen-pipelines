@@ -301,7 +301,7 @@ export abstract class CDKPipeline extends Component {
     if (this.baseOptions.preInstallCommands) {
       seq.addSteps(new SimpleCommandStep(this.project, this.baseOptions.preInstallCommands));
     }
-    seq.addSteps(new ProjenScriptStep(this.project, this.app.package.installCiTask.name));
+    seq.addSteps(new SimpleCommandStep(this.project, [this.app.package.installCommand]));
     return seq;
   }
 

@@ -39,7 +39,7 @@ synth:
   needs: []
   stage: synth
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "synthRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen build
   variables: {}
@@ -51,7 +51,7 @@ publish_assets:
     - job: synth
       artifacts: true
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "publishRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen publish:assets:dev
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "prodPublishRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
@@ -69,7 +69,7 @@ diff-dev:
       artifacts: true
     - job: publish_assets
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "devRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen fastdiff:dev
   variables:
@@ -88,7 +88,7 @@ deploy-dev:
     - job: publish_assets
     - job: diff-dev
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "devRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen deploy:dev
     - if [ -f "cdk-outputs-dev.json" ]; then
@@ -120,7 +120,7 @@ diff-prod:
       artifacts: true
     - job: publish_assets
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "prodRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen diff:prod
   variables:
@@ -140,7 +140,7 @@ deploy-prod:
     - job: publish_assets
     - job: diff-prod
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "prodRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen deploy:prod
     - if [ -f "cdk-outputs-prod.json" ]; then
@@ -310,7 +310,7 @@ backend-synth:
   needs: []
   stage: synth
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "synthRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen build
   variables: {}
@@ -322,7 +322,7 @@ backend-publish_assets:
     - job: backend-synth
       artifacts: true
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "publishRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen publish:assets
   variables: {}
@@ -338,7 +338,7 @@ backend-diff-dev:
       artifacts: true
     - job: backend-publish_assets
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "devRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen fastdiff:dev
   variables:
@@ -357,7 +357,7 @@ backend-deploy-dev:
     - job: backend-publish_assets
     - job: backend-diff-dev
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "devRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen deploy:dev
     - if [ -f "cdk-outputs-dev.json" ]; then
@@ -389,7 +389,7 @@ backend-diff-prod:
       artifacts: true
     - job: backend-publish_assets
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "prodRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen diff:prod
   variables:
@@ -409,7 +409,7 @@ backend-deploy-prod:
     - job: backend-publish_assets
     - job: backend-diff-prod
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "prodRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen deploy:prod
     - if [ -f "cdk-outputs-prod.json" ]; then
@@ -439,7 +439,7 @@ backend-deploy-sandbox:
       - main
   needs: []
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "synthRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen build
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "undefined" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
@@ -505,7 +505,7 @@ synth:
   needs: []
   stage: synth
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "synthRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen build
   variables: {}
@@ -517,7 +517,7 @@ publish_assets:
     - job: synth
       artifacts: true
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "publishRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen publish:assets
   variables: {}
@@ -529,7 +529,7 @@ deploy-independent1:
   when: manual
   needs: []
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "synthRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen build
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "deployRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
@@ -565,7 +565,7 @@ deploy-independent2:
       - main
   needs: []
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "synthRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen build
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "deployRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
@@ -631,7 +631,7 @@ synth:
   needs: []
   stage: synth
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "synthRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen build
   variables: {}
@@ -643,7 +643,7 @@ publish_assets:
     - job: synth
       artifacts: true
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "publishRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen publish:assets
   variables: {}
@@ -662,7 +662,7 @@ diff-dev:
       artifacts: true
     - job: publish_assets
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "devRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen fastdiff:dev
   variables:
@@ -684,7 +684,7 @@ deploy-dev:
     - job: publish_assets
     - job: diff-dev
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "devRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen deploy:dev
     - if [ -f "cdk-outputs-dev.json" ]; then
@@ -719,7 +719,7 @@ diff-prod:
       artifacts: true
     - job: publish_assets
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "prodRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen diff:prod
   variables:
@@ -742,7 +742,7 @@ deploy-prod:
     - job: publish_assets
     - job: diff-prod
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "prodRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen deploy:prod
     - if [ -f "cdk-outputs-prod.json" ]; then
@@ -806,7 +806,7 @@ synth:
   stage: synth
   script:
     - echo Login
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "synthRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen build
   variables:
@@ -820,7 +820,7 @@ publish_assets:
       artifacts: true
   script:
     - echo Login
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "publishRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen publish:assets
   variables:
@@ -838,7 +838,7 @@ diff-prod:
     - job: publish_assets
   script:
     - echo Login
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "defaultRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen diff:prod
   variables:
@@ -859,7 +859,7 @@ deploy-prod:
     - job: diff-prod
   script:
     - echo Login
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "defaultRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen deploy:prod
     - if [ -f "cdk-outputs-prod.json" ]; then
@@ -924,7 +924,7 @@ synth:
   tags:
     - defaultTag
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "synthRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen build
   variables: {}
@@ -938,7 +938,7 @@ publish_assets:
     - job: synth
       artifacts: true
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "publishRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen publish:assets
   variables: {}
@@ -956,7 +956,7 @@ diff-dev:
       artifacts: true
     - job: publish_assets
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "devRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen diff:dev
   variables:
@@ -977,7 +977,7 @@ deploy-dev:
     - job: publish_assets
     - job: diff-dev
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "devRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen deploy:dev
     - if [ -f "cdk-outputs-dev.json" ]; then
@@ -1011,7 +1011,7 @@ diff-prod:
       artifacts: true
     - job: publish_assets
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "prodRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen diff:prod
   variables:
@@ -1033,7 +1033,7 @@ deploy-prod:
     - job: publish_assets
     - job: diff-prod
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "prodRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen deploy:prod
     - if [ -f "cdk-outputs-prod.json" ]; then
@@ -1097,7 +1097,7 @@ synth:
   tags:
     - synthTag
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "synthRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen build
   variables: {}
@@ -1111,7 +1111,7 @@ publish_assets:
     - job: synth
       artifacts: true
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "publishRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen publish:assets
   variables: {}
@@ -1129,7 +1129,7 @@ diff-dev:
       artifacts: true
     - job: publish_assets
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "devRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen diff:dev
   variables:
@@ -1150,7 +1150,7 @@ deploy-dev:
     - job: publish_assets
     - job: diff-dev
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "devRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen deploy:dev
     - if [ -f "cdk-outputs-dev.json" ]; then
@@ -1184,7 +1184,7 @@ diff-prod:
       artifacts: true
     - job: publish_assets
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "prodRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen diff:prod
   variables:
@@ -1206,7 +1206,7 @@ deploy-prod:
     - job: publish_assets
     - job: diff-prod
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "prodRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen deploy:prod
     - if [ -f "cdk-outputs-prod.json" ]; then
@@ -1268,7 +1268,7 @@ synth:
   needs: []
   stage: synth
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "synthRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen build
   variables: {}
@@ -1280,7 +1280,7 @@ publish_assets:
     - job: synth
       artifacts: true
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "publishRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen publish:assets
   variables: {}
@@ -1296,7 +1296,7 @@ diff-dev:
       artifacts: true
     - job: publish_assets
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "devRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen diff:dev
   variables:
@@ -1315,7 +1315,7 @@ deploy-dev:
     - job: publish_assets
     - job: diff-dev
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "devRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen deploy:dev
     - if [ -f "cdk-outputs-dev.json" ]; then
@@ -1347,7 +1347,7 @@ diff-prod:
       artifacts: true
     - job: publish_assets
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "prodRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen diff:prod
   variables:
@@ -1366,7 +1366,7 @@ deploy-prod:
     - job: publish_assets
     - job: diff-prod
   script:
-    - npx projen install:ci
+    - yarn install --check-files --frozen-lockfile
     - export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn "prodRole" --role-session-name "GitLabRunner-\${CI_PROJECT_ID}-\${CI_PIPELINE_ID}}" --web-identity-token \${AWS_TOKEN} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text))
     - npx projen deploy:prod
     - if [ -f "cdk-outputs-prod.json" ]; then

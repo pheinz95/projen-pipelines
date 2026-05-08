@@ -119,20 +119,20 @@ exports[`Bash snapshot 2`] = `
 
 Synthesize your CDK project:
 \`\`\`bash
-npx projen install:ci
+yarn install --check-files --frozen-lockfile
 npx projen build
 \`\`\`
 
 Publish all your CDK assets like Lambda function code and container images:
 \`\`\`bash
-npx projen install:ci
+yarn install --check-files --frozen-lockfile
 echo "Login to AWS using role undefined for region undefined"
 npx projen publish:assets
 \`\`\`
 
 If you want to store your cloud assembly and assets for future use or compliance reasons, use:
 \`\`\`bash
-npx projen install:ci
+yarn install --check-files --frozen-lockfile
 echo "Login to AWS using role undefined for region undefined"
 npx projen publish:assets
 \`\`\`
@@ -183,20 +183,20 @@ exports[`Bash snapshot with pkgNamespace 1`] = `
 
 Synthesize your CDK project:
 \`\`\`bash
-npx projen install:ci
+yarn install --check-files --frozen-lockfile
 npx projen build
 \`\`\`
 
 Publish all your CDK assets like Lambda function code and container images:
 \`\`\`bash
-npx projen install:ci
+yarn install --check-files --frozen-lockfile
 echo "Login to AWS using role undefined for region undefined"
 npx projen publish:assets
 \`\`\`
 
 If you want to store your cloud assembly and assets for future use or compliance reasons, use:
 \`\`\`bash
-npx projen install:ci
+yarn install --check-files --frozen-lockfile
 echo "Login to AWS using role undefined for region undefined"
 npx projen publish:assets
 npx projen bump
@@ -249,20 +249,20 @@ exports[`Bash snapshot with versioning enabled 1`] = `
 
 Synthesize your CDK project:
 \`\`\`bash
-npx projen install:ci
+yarn install --check-files --frozen-lockfile
 npx projen build
 \`\`\`
 
 Publish all your CDK assets like Lambda function code and container images:
 \`\`\`bash
-npx projen install:ci
+yarn install --check-files --frozen-lockfile
 echo "Login to AWS using role undefined for region undefined"
 npx projen publish:assets
 \`\`\`
 
 If you want to store your cloud assembly and assets for future use or compliance reasons, use:
 \`\`\`bash
-npx projen install:ci
+yarn install --check-files --frozen-lockfile
 echo "Login to AWS using role undefined for region undefined"
 npx projen publish:assets
 \`\`\`
